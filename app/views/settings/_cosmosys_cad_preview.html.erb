@@ -1,0 +1,9 @@
+<p><%= l(:text_cosmosys_cad_preview_defaults) %></p>
+<p>
+  <%= label_tag 'cosmosys_cad_material_mode', l(:label_cosmosys_cad_material_mode) %>
+  <%= select_tag 'settings[material_mode]', options_for_select([[l(:label_cosmosys_cad_original), 'original'], [l(:label_cosmosys_cad_matte), 'matte']], @settings['material_mode']), id: 'cosmosys_cad_material_mode' %>
+</p>
+<p>
+  <%= label_tag 'cosmosys_cad_lighting', l(:label_cosmosys_cad_lighting) %>
+  <%= select_tag 'settings[lighting]', options_for_select([[l(:label_cosmosys_cad_studio), 'studio'], [l(:label_cosmosys_cad_original), 'original']], @settings['lighting']), id: 'cosmosys_cad_lighting' %>
+</p>

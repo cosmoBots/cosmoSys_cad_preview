@@ -1,0 +1,7 @@
+es:
+  text_cosmosys_cad_preview_defaults: "Aspecto inicial del visor CAD. Se puede cambiar en el visor sin modificar el adjunto. La iluminación de estudio aporta reflejos a los materiales metálicos."
+  label_cosmosys_cad_material_mode: "Material predeterminado"
+  label_cosmosys_cad_lighting: "Iluminación predeterminada"
+  label_cosmosys_cad_original: "Original"
+  label_cosmosys_cad_matte: "Mate"
+  label_cosmosys_cad_studio: "Estudio"

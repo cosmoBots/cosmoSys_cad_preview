@@ -1,0 +1,7 @@
+en:
+  text_cosmosys_cad_preview_defaults: "Initial CAD viewer appearance. Users can change it in the viewer without modifying the attachment. Studio lighting adds reflections for metallic materials."
+  label_cosmosys_cad_material_mode: "Default material"
+  label_cosmosys_cad_lighting: "Default lighting"
+  label_cosmosys_cad_original: "Original"
+  label_cosmosys_cad_matte: "Matte"
+  label_cosmosys_cad_studio: "Studio"
