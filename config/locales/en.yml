@@ -1,4 +1,6 @@
 en:
+  text_cosmosys_cad_macro_usage: "Use {{cad_preview(attachment_id, height=520)}}; height must be between 240 and 1200 pixels."
+  text_cosmosys_cad_macro_unavailable: "CAD attachment unavailable or not accessible."
   text_cosmosys_cad_preview_defaults: "Initial CAD viewer appearance. Users can change it in the viewer without modifying the attachment. Studio lighting adds reflections for metallic materials."
   label_cosmosys_cad_material_mode: "Default material"
   label_cosmosys_cad_lighting: "Default lighting"

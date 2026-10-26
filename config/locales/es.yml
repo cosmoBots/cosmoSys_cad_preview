@@ -1,4 +1,6 @@
 es:
+  text_cosmosys_cad_macro_usage: "Usa {{cad_preview(id_adjunto, height=520)}}; la altura debe estar entre 240 y 1200 píxeles."
+  text_cosmosys_cad_macro_unavailable: "Adjunto CAD no disponible o sin permiso de acceso."
   text_cosmosys_cad_preview_defaults: "Aspecto inicial del visor CAD. Se puede cambiar en el visor sin modificar el adjunto. La iluminación de estudio aporta reflejos a los materiales metálicos."
   label_cosmosys_cad_material_mode: "Material predeterminado"
   label_cosmosys_cad_lighting: "Iluminación predeterminada"

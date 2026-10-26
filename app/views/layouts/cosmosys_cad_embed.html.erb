@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="<%= current_language %>">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= @attachment.filename %></title>
+  <%= csrf_meta_tags %>
+  <%= stylesheet_link_tag 'application' %>
+  <%= yield :header_tags %>
+  <style>
+    body { margin: 8px; padding: 0; }
+    .cad-preview-canvas { block-size: calc(100vh - 125px); min-block-size: 120px; }
+  </style>
+</head>
+<body><%= yield %></body>
+</html>
