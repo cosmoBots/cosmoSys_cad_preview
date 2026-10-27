@@ -1,4 +1,5 @@
 en:
+  text_cosmosys_cad_view_load_error: "The viewer did not finish loading. Reload the view to save or restore its framing."
   text_cosmosys_cad_view_saving: "Saving view and image…"
   label_cosmosys_cad_view_saved: "Saved"
   label_cosmosys_cad_view_restored: "View restored"

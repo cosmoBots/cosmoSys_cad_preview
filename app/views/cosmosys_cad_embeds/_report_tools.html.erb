@@ -1,15 +1,22 @@
-<% if @attachment && @attachment.visible? && RedmineCadPreview.previewable?(@attachment) %>
+<% if @attachment && @attachment.visible? && RedmineCadPreview.previewable?(@attachment) && !RedmineCadPreview::IMAGE_FORMATS.include?(RedmineCadPreview.format_of(@attachment.filename)) %>
   <div id="cad-report-tools" data-url="<%= url_for(controller: '/cosmosys_cad_embeds', action: 'view', id: @attachment.id, only_path: true) %>"
        data-editable="<%= @attachment.editable? %>" data-labels="<%= {
          save: l(:button_cosmosys_cad_save_view), restore: l(:button_cosmosys_cad_restore_view),
          saving: l(:text_cosmosys_cad_view_saving), savedShort: l(:label_cosmosys_cad_view_saved),
          restored: l(:text_cosmosys_cad_view_restored), restoredShort: l(:label_cosmosys_cad_view_restored),
          empty: l(:text_cosmosys_cad_capture_empty),
+         loadError: l(:text_cosmosys_cad_view_load_error),
          missing: l(:text_cosmosys_cad_view_missing), saved: l(:text_cosmosys_cad_view_saved),
          error: l(:text_cosmosys_cad_view_error), conflict: l(:text_cosmosys_cad_view_conflict),
          projection: l(:label_cosmosys_cad_projection), perspective: l(:label_cosmosys_cad_perspective),
          orthographic: l(:label_cosmosys_cad_orthographic)
-       }.to_json %>"></div>
+       }.to_json %>">
+    <% if @attachment.editable? %>
+      <button type="button" data-cad-report-save disabled><%= l(:button_cosmosys_cad_save_view) %></button>
+    <% end %>
+    <button type="button" data-cad-report-restore disabled><%= l(:button_cosmosys_cad_restore_view) %></button>
+    <span role="status"><%= l(:label_loading) %></span>
+  </div>
   <%= javascript_include_tag 'report_view', plugin: 'cosmosys_cad_preview', type: 'module' %>
   <%= stylesheet_link_tag 'report_view', plugin: 'cosmosys_cad_preview' %>
 <% end %>

@@ -29,7 +29,7 @@ Redmine::WikiFormatting::Macros.register do
       safe_join([
         content_tag(:iframe, '', src: viewer_url, title: attachment.filename,
                     width: '100%', height: height, loading: 'lazy',
-                    allow: 'fullscreen', style: 'border: 1px solid #dee2e6; max-width: 100%;'),
+                    allow: 'fullscreen', style: 'border: 1px solid #dee2e6; max-width: 100%; scroll-margin-top: 64px;'),
         content_tag(:p, link_to(attachment.filename, attachment_url))
       ])
     end

@@ -47,7 +47,11 @@ full-window image with a transparent cropped capture.
 the model does not change the figure. The saved view is applied on opening.
 The viewport preserves the saved aspect ratio rather than stretching its frame.
 Buttons show pressed, busy/spinner, success and error feedback, with accessible
-status announcements. Read-only users can restore/explore but cannot save. Concurrent edits conflict
+status announcements. Save/restore buttons are rendered in the initial HTML,
+disabled until the model loads, and remain visible with an explicit error if
+loading fails. The compact iframe removes Redmine's desktop minimum width;
+its toolbar stays sticky while scrolling.
+Read-only users can restore/explore but cannot save. Concurrent edits conflict
 instead of silently overwriting the other user's view; reload before retrying.
 
 In cosmoSys HTML reports and ODT/DOCX/PDF exports, the macro renders the saved

@@ -5,9 +5,9 @@ async function initialize(element, viewer) {
   tools.dataset.initialized = 'true';
   element.prepend(tools);
   const labels = JSON.parse(tools.dataset.labels);
-  const status = document.createElement('span');
+  const status = tools.querySelector('[role="status"]') || document.createElement('span');
   status.setAttribute('role', 'status');
-  const restore = document.createElement('button');
+  const restore = tools.querySelector('[data-cad-report-restore]') || document.createElement('button');
   restore.type = 'button';
   restore.textContent = labels.restore;
   restore.disabled = true;
@@ -17,7 +17,7 @@ async function initialize(element, viewer) {
     projection.add(new Option(labels[value], value));
   }
   projection.addEventListener('change', () => viewer.setProjection(projection.value));
-  if (viewer.setProjection) tools.append(projection, ' ');
+  if (viewer.setProjection) tools.prepend(projection);
   tools.append(restore, ' ', status);
   let record;
 
@@ -50,7 +50,7 @@ async function initialize(element, viewer) {
     }
   });
 
-  const save = document.createElement('button');
+  const save = tools.querySelector('[data-cad-report-save]') || document.createElement('button');
   save.type = 'button';
   save.textContent = labels.save;
   save.disabled = true;
@@ -100,6 +100,16 @@ async function initialize(element, viewer) {
 }
 
 document.addEventListener('cad-preview:ready', (event) => initialize(event.target, event.detail.viewer));
+function showLoadError() {
+  const tools = document.getElementById('cad-report-tools');
+  if (!tools) return;
+  tools.dataset.feedback = 'error';
+  tools.querySelector('[role="status"]').textContent = JSON.parse(tools.dataset.labels).loadError;
+}
+document.addEventListener('cad-preview:error', showLoadError);
 document.querySelectorAll('[data-cad-preview]').forEach((element) => {
+  const tools = document.getElementById('cad-report-tools');
+  if (tools) element.prepend(tools);
+  if (element.cadError) showLoadError();
   if (element.cadViewer) initialize(element, element.cadViewer);
 });

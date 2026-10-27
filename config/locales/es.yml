@@ -1,4 +1,5 @@
 es:
+  text_cosmosys_cad_view_load_error: "El visor no terminó de cargar. Recarga la vista para guardar o recuperar el encuadre."
   text_cosmosys_cad_view_saving: "Guardando vista e imagen…"
   label_cosmosys_cad_view_saved: "Guardado"
   label_cosmosys_cad_view_restored: "Vista recuperada"

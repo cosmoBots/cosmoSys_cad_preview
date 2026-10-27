@@ -8,6 +8,7 @@
   <%= stylesheet_link_tag 'application' %>
   <%= yield :header_tags %>
   <style>
+    html, body { min-width: 0; min-inline-size: 0; }
     body { margin: 8px; padding: 0; }
     .cad-preview-canvas { block-size: calc(100vh - 125px); min-block-size: 120px; }
   </style>
