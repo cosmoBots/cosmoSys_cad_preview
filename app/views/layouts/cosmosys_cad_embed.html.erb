@@ -12,5 +12,8 @@
     .cad-preview-canvas { block-size: calc(100vh - 125px); min-block-size: 120px; }
   </style>
 </head>
-<body><%= yield %></body>
+<body>
+  <%= render partial: 'cosmosys_cad_embeds/report_tools' %>
+  <%= yield %>
+</body>
 </html>

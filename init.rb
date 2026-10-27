@@ -2,6 +2,7 @@
 
 require 'redmine'
 require_relative 'config/macros_registration'
+Rails.application.config.filter_parameters << :cad_report_image
 
 Redmine::Plugin.register :cosmosys_cad_preview do
   name 'cosmoSys CAD Preview integration'
@@ -26,4 +27,12 @@ class CosmosysCadPreviewListener < Redmine::Hook::Listener
       Setting.plugin_cosmosys_cad_preview.slice('material_mode', 'lighting')
     end
   end
+end
+
+class CosmosysCadPreviewViewListener < Redmine::Hook::ViewListener
+  render_on :view_layouts_base_body_bottom, partial: 'cosmosys_cad_embeds/report_tools'
+end
+
+Rails.application.config.to_prepare do
+  Attachment.include CosmosysCadPreview::AttachmentPatch unless Attachment < CosmosysCadPreview::AttachmentPatch
 end

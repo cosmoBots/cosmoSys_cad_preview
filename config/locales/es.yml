@@ -1,4 +1,13 @@
 es:
+  button_cosmosys_cad_save_view: "Guardar vista para informes"
+  button_cosmosys_cad_restore_view: "Volver a la vista del informe"
+  text_cosmosys_cad_view_missing: "Todavía no hay una vista guardada para informes."
+  text_cosmosys_cad_view_saved: "Vista e imagen del informe guardadas."
+  text_cosmosys_cad_view_error: "No se pudo cargar o guardar la vista del informe."
+  text_cosmosys_cad_view_conflict: "Otra persona ha cambiado la vista del informe. Recarga antes de volver a guardar."
+  label_cosmosys_cad_projection: "Proyección"
+  label_cosmosys_cad_perspective: "Perspectiva"
+  label_cosmosys_cad_orthographic: "Ortográfica"
   text_cosmosys_cad_macro_usage: "Usa {{cad_preview(id_adjunto, height=520)}}; la altura debe estar entre 240 y 1200 píxeles."
   text_cosmosys_cad_macro_unavailable: "Adjunto CAD no disponible o sin permiso de acceso."
   text_cosmosys_cad_preview_defaults: "Aspecto inicial del visor CAD. Se puede cambiar en el visor sin modificar el adjunto. La iluminación de estudio aporta reflejos a los materiales metálicos."

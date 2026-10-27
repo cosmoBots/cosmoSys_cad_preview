@@ -17,8 +17,14 @@ Redmine::WikiFormatting::Macros.register do
       raise l(:text_cosmosys_cad_macro_unavailable)
     end
 
-    viewer_url = url_for(controller: 'cosmosys_cad_embeds', action: 'show', id: attachment.id, only_path: true)
+    viewer_url = url_for(controller: '/cosmosys_cad_embeds', action: 'show', id: attachment.id, only_path: true)
     attachment_url = attachment_path(attachment)
+    if controller.is_a?(Cosmosys::ItemsController) && %w[report report_export].include?(controller.action_name)
+      saved = CosmosysCadPreview::ReportView.read(attachment)
+      next saved ? image_tag("data:image/png;base64,#{saved.fetch('png')}", alt: attachment.filename,
+                             width: saved.fetch('width'), height: saved.fetch('height')) :
+        content_tag(:p, safe_join([l(:text_cosmosys_cad_view_missing), ' ', link_to(attachment.filename, viewer_url)]))
+    end
     content_tag(:div, class: 'cosmosys-cad-embed') do
       safe_join([
         content_tag(:iframe, '', src: viewer_url, title: attachment.filename,

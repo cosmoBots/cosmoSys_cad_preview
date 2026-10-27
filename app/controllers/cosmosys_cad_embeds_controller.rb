@@ -2,11 +2,41 @@
 
 # Reuse the upstream attachment authorization and viewer, with a compact layout.
 class CosmosysCadEmbedsController < CadPreviewsController
+  before_action :authorize_view_edit, only: :save_view
+
+  def view
+    data = CosmosysCadPreview::ReportView.read(@attachment)
+    response.headers['Cache-Control'] = 'no-store'
+    render json: data ? data.except('png', 'digest', 'filesize') : { state: nil, revision: nil }
+  end
+
+  def save_view
+    return head :unprocessable_content if @attachment.filename.match?(/\.(?:dxf|dwg)\z/i) ||
+      RedmineCadPreview::IMAGE_FORMATS.include?(RedmineCadPreview.format_of(@attachment.filename))
+    body = request.body.read(CosmosysCadPreview::ReportView::MAX_BODY + 1)
+    return head :payload_too_large if body.bytesize > CosmosysCadPreview::ReportView::MAX_BODY
+    payload = JSON.parse(body)
+    raise CosmosysCadPreview::ReportView::Invalid unless payload.is_a?(Hash)
+    data = CosmosysCadPreview::ReportView.save!(@attachment, payload, User.current)
+    response.headers['Cache-Control'] = 'no-store'
+    render json: data.except('png', 'digest', 'filesize')
+  rescue JSON::ParserError, CosmosysCadPreview::ReportView::Invalid
+    head :unprocessable_content
+  rescue CosmosysCadPreview::ReportView::Conflict
+    head :conflict
+  end
+
   def show
     @cad_format = RedmineCadPreview.format_of(@attachment.filename)
     @cad_image = RedmineCadPreview::PreviewImage.extract(@attachment)
     @cad_snapshot = false # Reading an embedded view must not save a thumbnail.
     prepend_view_path File.expand_path('../views/cosmosys_cad_embeds', __dir__)
     render template: 'attachments/cad_preview', layout: 'cosmosys_cad_embed'
+  end
+
+  private
+
+  def authorize_view_edit
+    @attachment.editable? ? true : deny_access
   end
 end

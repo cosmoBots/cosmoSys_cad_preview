@@ -27,6 +27,35 @@ Missing, inaccessible or unsupported attachments produce a generic macro error.
 Only numeric attachment IDs are supported, not arbitrary URLs or filenames.
 The embedded viewer does not save automatic thumbnail snapshots.
 
-Saved editorial cameras and static report figures remain future work. This
-macro is interactive HTML, not a figure for PDF/ODT export. The attachment link
-below it also lets the reader open the full viewer.
+## Saved report view (3D models)
+
+The embedded and full attachment viewers offer **Save view for reports** to
+users allowed to edit the attachment. It saves camera position/target/up,
+perspective or orthographic projection, zoom/frustum, viewport aspect, material,
+lighting, wireframe and background together with a PNG capture (maximum 1600 px
+per side). The original model and its automatic thumbnail are never replaced.
+
+**Return to report view** restores the saved camera and appearance; exploring
+the model does not change the figure. The saved view is applied on opening.
+The viewport preserves the saved aspect ratio rather than stretching its frame.
+Read-only users can restore/explore but cannot save. Concurrent edits conflict
+instead of silently overwriting the other user's view; reload before retrying.
+
+In cosmoSys HTML reports and ODT/DOCX/PDF exports, the macro renders the saved
+PNG directly, without loading WebGL or requiring a server-side browser. If no
+view exists, a notice and link are shown, not an invented camera. Captures are
+explicit editorial content, not a cache. One view is stored per attachment.
+
+Storage: `files/cosmosys_cad_report_views/<attachment_id>.json`, with camera and
+base64 PNG in a single atomically replaced file. Include this directory in
+Redmine files backups. No database migration is required. A model digest/size
+change invalidates the view, and deleting the attachment removes its record.
+The save endpoint checks CSRF, edit permission, camera values, PNG format/size,
+and optimistic revision. Image payloads are filtered from request logs.
+PNG validation uses ImageMagick already provided by cosmoSys.
+
+Limits: report views currently cover 3D models, not DXF/DWG or proprietary
+thumbnail-only formats. Named views, snapshot/copy transfer and ID rewriting of
+these macros remain future work: transferring a project currently requires
+recreating its editorial views. This does not extend standalone Redmine wiki
+PDF export; the static figure path is the cosmoSys report exporter.
