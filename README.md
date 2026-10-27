@@ -1,7 +1,10 @@
 # cosmoSys CAD Preview integration
 
-Version: `0.1.0`. Redmine 7.0.1+, cosmoSys 0.2.0+ and
+Version: `0.1.1`. Redmine 7.0.1+, cosmoSys 0.2.4+ and
 the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
+
+Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
+it does not change the upstream viewer or the editorial capture workflow.
 
 This plugin supplies initial material and lighting options through the fork's
 generic viewer-options provider. It does not duplicate its JavaScript viewer,
