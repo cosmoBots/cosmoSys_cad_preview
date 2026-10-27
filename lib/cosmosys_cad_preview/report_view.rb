@@ -28,6 +28,13 @@ module CosmosysCadPreview
 
     def validate_state!(state)
       raise Invalid unless state.is_a?(Hash) && state['version'] == 1
+      if state['projection'] == 'drawing'
+        raise Invalid unless state['center'].is_a?(Array) && state['center'].size == 2 &&
+          state['center'].all? { |n| number?(n) && n.abs <= 1e15 }
+        raise Invalid unless number?(state['view_width']) && (0.0..1e18).cover?(state['view_width']) && state['view_width'].positive?
+        raise Invalid unless number?(state['aspect']) && (0.1..10).cover?(state['aspect'])
+        return state.slice('version', 'projection', 'center', 'view_width', 'aspect')
+      end
       raise Invalid unless %w[perspective orthographic].include?(state['projection'])
       %w[position target up].each do |key|
         vector = state[key]
@@ -57,7 +64,8 @@ module CosmosysCadPreview
       raise Invalid unless bytes.start_with?("\x89PNG\r\n\x1a\n".b) && bytes.bytesize >= 33 && bytes.byteslice(12, 4) == 'IHDR'
       width, height = bytes.byteslice(16, 8).unpack('NN')
       raise Invalid unless (1..1600).cover?(width) && (1..1600).cover?(height)
-      raise Invalid unless ((width.to_f / height) - state['aspect']).abs <= 0.02
+      # The saved viewport aspect restores the camera; the cropped figure has
+      # its own dimensions and must not be forced back to that viewport ratio.
       output, _error, status = Open3.capture3('/usr/bin/magick', 'identify', '-limit', 'memory', '32MiB',
         '-limit', 'map', '64MiB', '-limit', 'time', '5', '-regard-warnings', '-format', '%m %w %h', 'png:-', stdin_data: bytes, binmode: true)
       raise Invalid unless status.success? && output == "PNG #{width} #{height}"

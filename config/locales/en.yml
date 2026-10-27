@@ -1,4 +1,9 @@
 en:
+  text_cosmosys_cad_view_saving: "Saving view and image…"
+  label_cosmosys_cad_view_saved: "Saved"
+  label_cosmosys_cad_view_restored: "View restored"
+  text_cosmosys_cad_view_restored: "The saved report view has been restored."
+  text_cosmosys_cad_capture_empty: "There is no visible content to capture. Adjust the view."
   button_cosmosys_cad_save_view: "Save view for reports"
   button_cosmosys_cad_restore_view: "Return to report view"
   text_cosmosys_cad_view_missing: "No report view has been saved."

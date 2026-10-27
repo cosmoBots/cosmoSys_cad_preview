@@ -17,8 +17,14 @@ async function initialize(element, viewer) {
     projection.add(new Option(labels[value], value));
   }
   projection.addEventListener('change', () => viewer.setProjection(projection.value));
-  tools.append(projection, ' ', restore, ' ', status);
+  if (viewer.setProjection) tools.append(projection, ' ');
+  tools.append(restore, ' ', status);
   let record;
+
+  function feedback(message, kind) {
+    status.textContent = message;
+    tools.dataset.feedback = kind;
+  }
 
   function apply() {
     if (!record?.state) return;
@@ -29,10 +35,20 @@ async function initialize(element, viewer) {
     viewer.measurement?.clear();
     viewer.restoreView(record.state);
     projection.value = record.state.projection;
-    element.querySelector('[data-cad-material-mode]').value = record.state.material;
-    element.querySelector('[data-cad-lighting]').value = record.state.lighting;
+    const material = element.querySelector('[data-cad-material-mode]');
+    const lighting = element.querySelector('[data-cad-lighting]');
+    if (material) material.value = record.state.material;
+    if (lighting) lighting.value = record.state.lighting;
   }
-  restore.addEventListener('click', apply);
+  restore.addEventListener('click', () => {
+    try {
+      apply();
+      restore.textContent = `✓ ${labels.restoredShort}`;
+      feedback(labels.restored, 'success');
+    } catch {
+      feedback(labels.error, 'error');
+    }
+  });
 
   const save = document.createElement('button');
   save.type = 'button';
@@ -41,6 +57,11 @@ async function initialize(element, viewer) {
   if (tools.dataset.editable === 'true') tools.insertBefore(save, restore);
   save.addEventListener('click', async () => {
     save.disabled = true;
+    restore.disabled = true;
+    projection.disabled = true;
+    save.textContent = labels.saving;
+    tools.setAttribute('aria-busy', 'true');
+    feedback(labels.saving, 'busy');
     try {
       const state = viewer.exportView();
       const image = viewer.captureImage();
@@ -51,12 +72,16 @@ async function initialize(element, viewer) {
       });
       if (!response.ok) throw new Error(response.status === 409 ? labels.conflict : labels.error);
       record = await response.json();
-      restore.disabled = false;
-      status.textContent = labels.saved;
+      save.textContent = `✓ ${labels.savedShort}`;
+      feedback(labels.saved, 'success');
     } catch (error) {
-      status.textContent = error.message || labels.error;
+      save.textContent = labels.save;
+      feedback(error.message === 'CAD_CAPTURE_EMPTY' ? labels.empty : (error.message || labels.error), 'error');
     } finally {
       save.disabled = false;
+      restore.disabled = !record?.state;
+      projection.disabled = false;
+      tools.setAttribute('aria-busy', 'false');
     }
   });
 
@@ -68,8 +93,9 @@ async function initialize(element, viewer) {
     status.textContent = record.state ? '' : labels.missing;
     apply();
     save.disabled = false;
+    tools.dataset.ready = 'true';
   } catch (error) {
-    status.textContent = labels.error;
+    feedback(labels.error, 'error');
   }
 }
 

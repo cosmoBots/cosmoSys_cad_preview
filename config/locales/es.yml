@@ -1,4 +1,9 @@
 es:
+  text_cosmosys_cad_view_saving: "Guardando vista e imagen…"
+  label_cosmosys_cad_view_saved: "Guardado"
+  label_cosmosys_cad_view_restored: "Vista recuperada"
+  text_cosmosys_cad_view_restored: "Se ha recuperado la vista guardada para el informe."
+  text_cosmosys_cad_capture_empty: "No hay contenido visible para capturar. Ajusta el encuadre."
   button_cosmosys_cad_save_view: "Guardar vista para informes"
   button_cosmosys_cad_restore_view: "Volver a la vista del informe"
   text_cosmosys_cad_view_missing: "Todavía no hay una vista guardada para informes."

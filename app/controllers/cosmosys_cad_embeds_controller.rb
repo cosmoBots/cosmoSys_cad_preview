@@ -11,12 +11,15 @@ class CosmosysCadEmbedsController < CadPreviewsController
   end
 
   def save_view
-    return head :unprocessable_content if @attachment.filename.match?(/\.(?:dxf|dwg)\z/i) ||
-      RedmineCadPreview::IMAGE_FORMATS.include?(RedmineCadPreview.format_of(@attachment.filename))
+    format = RedmineCadPreview.format_of(@attachment.filename)
+    return head :unprocessable_content if RedmineCadPreview::IMAGE_FORMATS.include?(format)
     body = request.body.read(CosmosysCadPreview::ReportView::MAX_BODY + 1)
     return head :payload_too_large if body.bytesize > CosmosysCadPreview::ReportView::MAX_BODY
     payload = JSON.parse(body)
     raise CosmosysCadPreview::ReportView::Invalid unless payload.is_a?(Hash)
+    drawing = %w[dxf dwg].include?(format)
+    raise CosmosysCadPreview::ReportView::Invalid unless payload['state'].is_a?(Hash) &&
+      (payload['state']['projection'] == 'drawing') == drawing
     data = CosmosysCadPreview::ReportView.save!(@attachment, payload, User.current)
     response.headers['Cache-Control'] = 'no-store'
     render json: data.except('png', 'digest', 'filesize')

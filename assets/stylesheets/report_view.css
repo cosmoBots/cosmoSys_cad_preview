@@ -1,0 +1,15 @@
+#cad-report-tools { display: flex; align-items: center; flex-wrap: wrap; gap: .5em; margin-bottom: .5em; }
+#cad-report-tools button { cursor: pointer; transition: background-color .15s, box-shadow .15s; }
+#cad-report-tools button:active { transform: translateY(1px); box-shadow: inset 0 2px 4px #0003; }
+#cad-report-tools button:disabled { cursor: default; opacity: .55; }
+#cad-report-tools [role="status"] { padding: .25em .5em; border-radius: 3px; }
+#cad-report-tools[data-feedback="success"] [role="status"] { color: #145724; background: #e3f4e6; }
+#cad-report-tools[data-feedback="error"] [role="status"] { color: #8b1a1a; background: #fdeaea; }
+#cad-report-tools[data-feedback="busy"] [role="status"] { color: #234765; background: #eaf2fa; }
+#cad-report-tools[aria-busy="true"] [role="status"]::before {
+  content: ""; display: inline-block; width: .8em; height: .8em; margin-right: .4em;
+  border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+  animation: cad-report-spin .8s linear infinite;
+}
+@keyframes cad-report-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { #cad-report-tools [role="status"]::before { animation: none; } }
