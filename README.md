@@ -1,6 +1,6 @@
 # cosmoSys CAD Preview integration
 
-Development version: `0.1.0-dirty`. Redmine 7.0.1+, cosmoSys 0.2.0+ and
+Version: `0.1.0`. Redmine 7.0.1+, cosmoSys 0.2.0+ and
 the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
 
 This plugin supplies initial material and lighting options through the fork's
@@ -71,7 +71,9 @@ full-window image with a transparent cropped capture.
 the model does not change the figure. The saved view is applied on opening.
 The viewport preserves the saved aspect ratio rather than stretching its frame.
 Buttons show pressed, busy/spinner, success and error feedback, with accessible
-status announcements. Save/restore buttons are rendered in the initial HTML,
+status announcements. Button action labels never change to a persistent
+"Saved" or "Restored": the last action is reported in status, not as a claim
+that the current camera still matches it. Save/restore buttons are rendered in the initial HTML,
 disabled until the model loads, and remain visible with an explicit error if
 loading fails. The compact iframe removes Redmine's desktop minimum width;
 its toolbar stays sticky while scrolling.

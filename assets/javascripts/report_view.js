@@ -44,7 +44,6 @@ async function initialize(element, viewer) {
   restore.addEventListener('click', () => {
     try {
       apply();
-      restore.textContent = `✓ ${labels.restoredShort}`;
       feedback(labels.restored, 'success');
     } catch {
       feedback(labels.error, 'error');
@@ -60,7 +59,6 @@ async function initialize(element, viewer) {
     save.disabled = true;
     restore.disabled = true;
     projection.disabled = true;
-    save.textContent = labels.saving;
     tools.setAttribute('aria-busy', 'true');
     feedback(labels.saving, 'busy');
     try {
@@ -73,10 +71,8 @@ async function initialize(element, viewer) {
       });
       if (!response.ok) throw new Error(response.status === 409 ? labels.conflict : labels.error);
       record = await response.json();
-      save.textContent = `✓ ${labels.savedShort}`;
       feedback(labels.saved, 'success');
     } catch (error) {
-      save.textContent = labels.save;
       feedback(error.message === 'CAD_CAPTURE_EMPTY' ? labels.empty : (error.message || labels.error), 'error');
     } finally {
       save.disabled = false;
