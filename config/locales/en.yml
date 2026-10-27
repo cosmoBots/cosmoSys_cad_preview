@@ -1,4 +1,6 @@
 en:
+  label_cosmosys_cad_report_view: "Report view"
+  label_cosmosys_cad_default_view: "Default"
   text_cosmosys_cad_view_load_error: "The viewer did not finish loading. Reload the view to save or restore its framing."
   text_cosmosys_cad_view_saving: "Saving view and image…"
   label_cosmosys_cad_view_saved: "Saved"
@@ -14,7 +16,7 @@ en:
   label_cosmosys_cad_projection: "Projection"
   label_cosmosys_cad_perspective: "Perspective"
   label_cosmosys_cad_orthographic: "Orthographic"
-  text_cosmosys_cad_macro_usage: "Use {{cad_preview(attachment_id, height=520)}}; height must be between 240 and 1200 pixels."
+  text_cosmosys_cad_macro_usage: "Use {{cad_preview(attachment_id, view=front, height=520)}}. View: 1–64 letters/digits, hyphens or underscores; height: 240–1200 pixels."
   text_cosmosys_cad_macro_unavailable: "CAD attachment unavailable or not accessible."
   text_cosmosys_cad_preview_defaults: "Initial CAD viewer appearance. Users can change it in the viewer without modifying the attachment. Studio lighting adds reflections for metallic materials."
   label_cosmosys_cad_material_mode: "Default material"

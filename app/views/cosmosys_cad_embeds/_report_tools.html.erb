@@ -1,5 +1,8 @@
 <% if @attachment && @attachment.visible? && RedmineCadPreview.previewable?(@attachment) && !RedmineCadPreview::IMAGE_FORMATS.include?(RedmineCadPreview.format_of(@attachment.filename)) %>
-  <div id="cad-report-tools" data-url="<%= url_for(controller: '/cosmosys_cad_embeds', action: 'view', id: @attachment.id, only_path: true) %>"
+  <% report_view_name = @cad_report_view_name || 'default' %>
+  <% view_params = report_view_name == 'default' ? {} : { view: report_view_name } %>
+  <div id="cad-report-tools" data-url="<%= url_for(controller: '/cosmosys_cad_embeds', action: 'view', id: @attachment.id, only_path: true, **view_params) %>"
+       data-view="<%= report_view_name %>"
        data-editable="<%= @attachment.editable? %>" data-labels="<%= {
          save: l(:button_cosmosys_cad_save_view), restore: l(:button_cosmosys_cad_restore_view),
          saving: l(:text_cosmosys_cad_view_saving), savedShort: l(:label_cosmosys_cad_view_saved),
@@ -11,6 +14,7 @@
          projection: l(:label_cosmosys_cad_projection), perspective: l(:label_cosmosys_cad_perspective),
          orthographic: l(:label_cosmosys_cad_orthographic)
        }.to_json %>">
+    <span class="cad-report-view-name"><%= l(:label_cosmosys_cad_report_view) %>: <%= report_view_name == 'default' ? l(:label_cosmosys_cad_default_view) : report_view_name %></span>
     <% if @attachment.editable? %>
       <button type="button" data-cad-report-save disabled><%= l(:button_cosmosys_cad_save_view) %></button>
     <% end %>

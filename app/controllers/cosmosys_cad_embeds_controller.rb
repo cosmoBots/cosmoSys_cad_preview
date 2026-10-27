@@ -2,12 +2,14 @@
 
 # Reuse the upstream attachment authorization and viewer, with a compact layout.
 class CosmosysCadEmbedsController < CadPreviewsController
+  before_action :find_report_view_name
   before_action :authorize_view_edit, only: :save_view
 
   def view
-    data = CosmosysCadPreview::ReportView.read(@attachment)
+    data = CosmosysCadPreview::ReportView.read(@attachment, view: @cad_report_view_name)
     response.headers['Cache-Control'] = 'no-store'
-    render json: data ? data.except('png', 'digest', 'filesize') : { state: nil, revision: nil }
+    render json: data ? data.except('png', 'digest', 'filesize').merge('view' => @cad_report_view_name) :
+      { state: nil, revision: nil, view: @cad_report_view_name }
   end
 
   def save_view
@@ -20,7 +22,7 @@ class CosmosysCadEmbedsController < CadPreviewsController
     drawing = %w[dxf dwg].include?(format)
     raise CosmosysCadPreview::ReportView::Invalid unless payload['state'].is_a?(Hash) &&
       (payload['state']['projection'] == 'drawing') == drawing
-    data = CosmosysCadPreview::ReportView.save!(@attachment, payload, User.current)
+    data = CosmosysCadPreview::ReportView.save!(@attachment, payload, User.current, view: @cad_report_view_name)
     response.headers['Cache-Control'] = 'no-store'
     render json: data.except('png', 'digest', 'filesize')
   rescue JSON::ParserError, CosmosysCadPreview::ReportView::Invalid
@@ -30,6 +32,7 @@ class CosmosysCadEmbedsController < CadPreviewsController
   end
 
   def show
+    response.headers['Cache-Control'] = 'no-store'
     @cad_format = RedmineCadPreview.format_of(@attachment.filename)
     @cad_image = RedmineCadPreview::PreviewImage.extract(@attachment)
     @cad_snapshot = false # Reading an embedded view must not save a thumbnail.
@@ -38,6 +41,12 @@ class CosmosysCadEmbedsController < CadPreviewsController
   end
 
   private
+
+  def find_report_view_name
+    @cad_report_view_name = CosmosysCadPreview::ReportView.view_name(request.query_parameters['view'])
+  rescue CosmosysCadPreview::ReportView::Invalid
+    head :unprocessable_content
+  end
 
   def authorize_view_edit
     @attachment.editable? ? true : deny_access

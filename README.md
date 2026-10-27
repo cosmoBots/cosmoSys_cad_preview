@@ -20,6 +20,22 @@ Use `{{cad_preview(123)}}`, where 123 is the attachment ID, in an item
 description or wiki page. Optional height: `{{cad_preview(123, height=520)}}`
 (240–1200 pixels; default 520). Width follows the available space.
 
+Use names to show the same attachment independently in several places:
+
+```text
+{{cad_preview(123, view=front, height=420)}}
+{{cad_preview(123, view=detail, height=420)}}
+```
+
+Each attachment + view name has its own camera, PNG, lock and revision.
+The toolbar identifies the active view. Saving/restoring affects only that
+name; repeating the same name elsewhere deliberately shares that view.
+Names are case-sensitive, 1–64 ASCII letters/digits/hyphens/underscores,
+starting with a letter or digit. `default` (or no `view=`) selects the legacy
+view, preserving existing captures without migration. A new name starts empty,
+never falls back to the default view. `view` and `height` may appear in either
+order; duplicate or unknown options are rejected. Links retain the view name.
+
 The macro embeds the existing viewer in a lazy-loaded, same-origin iframe,
 without Redmine navigation. It checks attachment visibility before emitting
 the frame, and the frame and file routes independently enforce permissions.
@@ -57,18 +73,19 @@ instead of silently overwriting the other user's view; reload before retrying.
 In cosmoSys HTML reports and ODT/DOCX/PDF exports, the macro renders the saved
 PNG directly, without loading WebGL or requiring a server-side browser. If no
 view exists, a notice and link are shown, not an invented camera. Captures are
-explicit editorial content, not a cache. One view is stored per attachment.
+explicit editorial content, not a cache. Views are keyed by attachment and name.
 
 Storage: `files/cosmosys_cad_report_views/<attachment_id>.json`, with camera and
-base64 PNG in a single atomically replaced file. Include this directory in
+base64 PNG in a single atomically replaced file for the default view; named
+views use `<attachment_id>.<view>.json`. Include this directory in
 Redmine files backups. No database migration is required. A model digest/size
-change invalidates the view, and deleting the attachment removes its record.
+change invalidates its views, and deleting the attachment removes all its view records.
 The save endpoint checks CSRF, edit permission, camera values, PNG format/size,
 and optimistic revision. Image payloads are filtered from request logs.
 PNG validation uses ImageMagick already provided by cosmoSys.
 
 Limits: proprietary thumbnail-only formats do not save a view; DWG still needs
-the optional converter (not installed in 3001). Named views, snapshot/copy transfer and ID rewriting of
+the optional converter (not installed in 3001). Snapshot/copy transfer and ID rewriting of
 these macros remain future work: transferring a project currently requires
 recreating its editorial views. This does not extend standalone Redmine wiki
 PDF export; the static figure path is the cosmoSys report exporter.

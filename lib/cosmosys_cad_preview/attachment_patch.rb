@@ -9,7 +9,7 @@ module CosmosysCadPreview
     private
 
     def cosmosys_cad_remove_report_view
-      FileUtils.rm_f(CosmosysCadPreview::ReportView.path(self))
+      CosmosysCadPreview::ReportView.delete_all(self)
     end
   end
 end

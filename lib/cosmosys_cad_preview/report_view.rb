@@ -15,12 +15,25 @@ module CosmosysCadPreview
     class Conflict < StandardError; end
     module_function
 
-    def path(attachment)
-      File.join(Attachment.storage_path, 'cosmosys_cad_report_views', "#{attachment.id}.json")
+    def view_name(value = nil)
+      name = value.nil? ? 'default' : value
+      raise Invalid unless name.is_a?(String) && name.match?(/\A[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}\z/)
+      name
     end
 
-    def read(attachment)
-      data = JSON.parse(File.binread(path(attachment)))
+    def path(attachment, view: nil)
+      name = view_name(view)
+      filename = name == 'default' ? "#{attachment.id}.json" : "#{attachment.id}.#{name}.json"
+      File.join(Attachment.storage_path, 'cosmosys_cad_report_views', filename)
+    end
+
+    def delete_all(attachment)
+      default = path(attachment)
+      FileUtils.rm_f([default] + Dir.glob(File.join(File.dirname(default), "#{attachment.id}.*.json")))
+    end
+
+    def read(attachment, view: nil)
+      data = JSON.parse(File.binread(path(attachment, view: view)))
       data if data['digest'] == attachment.digest && data['filesize'] == attachment.filesize
     rescue Errno::ENOENT, JSON::ParserError
       nil
@@ -74,16 +87,17 @@ module CosmosysCadPreview
       raise Invalid
     end
 
-    def save!(attachment, payload, user)
+    def save!(attachment, payload, user, view: nil)
+      name = view_name(view)
       state = validate_state!(payload['state'])
       image, width, height = validate_image!(payload['cad_report_image'], state)
-      destination = path(attachment)
+      destination = path(attachment, view: name)
       FileUtils.mkdir_p(File.dirname(destination))
       File.open("#{destination}.lock", File::RDWR | File::CREAT, 0o600) do |lock|
         lock.flock(File::LOCK_EX)
-        current = read(attachment)
+        current = read(attachment, view: name)
         raise Conflict unless current&.fetch('revision') == payload['revision']
-        data = { 'state' => state, 'png' => image, 'width' => width, 'height' => height,
+        data = { 'view' => name, 'state' => state, 'png' => image, 'width' => width, 'height' => height,
                  'revision' => SecureRandom.uuid, 'digest' => attachment.digest, 'filesize' => attachment.filesize,
                  'author_id' => user.id, 'saved_at' => Time.now.utc.iso8601 }
         temporary = "#{destination}.#{SecureRandom.hex(8)}.tmp"
