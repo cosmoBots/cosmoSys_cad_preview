@@ -3,6 +3,7 @@ async function initialize(element, viewer) {
   const tools = document.getElementById('cad-report-tools');
   if (!tools || tools.dataset.initialized || !viewer.exportView) return;
   tools.dataset.initialized = 'true';
+  const { captureReportImage } = await import(tools.dataset.captureUrl);
   element.prepend(tools);
   const labels = JSON.parse(tools.dataset.labels);
   const status = tools.querySelector('[role="status"]') || document.createElement('span');
@@ -64,7 +65,7 @@ async function initialize(element, viewer) {
     feedback(labels.saving, 'busy');
     try {
       const state = viewer.exportView();
-      const image = viewer.captureImage();
+      const image = captureReportImage(viewer);
       const response = await fetch(tools.dataset.url, {
         method: 'PUT', credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },

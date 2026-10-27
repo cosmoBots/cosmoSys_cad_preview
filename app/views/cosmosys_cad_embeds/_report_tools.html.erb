@@ -3,6 +3,7 @@
   <% view_params = report_view_name == 'default' ? {} : { view: report_view_name } %>
   <div id="cad-report-tools" data-url="<%= url_for(controller: '/cosmosys_cad_embeds', action: 'view', id: @attachment.id, only_path: true, **view_params) %>"
        data-view="<%= report_view_name %>"
+       data-capture-url="<%= asset_path('plugin_assets/cosmosys_cad_preview/report_capture.js') %>"
        data-editable="<%= @attachment.editable? %>" data-labels="<%= {
          save: l(:button_cosmosys_cad_save_view), restore: l(:button_cosmosys_cad_restore_view),
          saving: l(:text_cosmosys_cad_view_saving), savedShort: l(:label_cosmosys_cad_view_saved),

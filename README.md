@@ -14,6 +14,14 @@ The fork lives at https://github.com/cosmoBots/redmine_cad_preview and retains
 the upstream MIT license and attribution. Studio reflections and matte material
 controls are generic features of that fork, not patches in this plugin.
 
+Editorial capture is implemented here in `assets/javascripts/report_capture.js`,
+using the fork's generic `getRenderContext()` API. Transparent rendering,
+alpha-bound cropping, the 1600 px limit and restoration of the background
+belong to this integration, along with storage and report selection. These
+cosmoBots additions are separate from the upstream author's viewer. Camera
+serialization/restoration and the original upstream screenshot tools remain
+in the viewer. Run `npm test` here for capture regressions (no dependencies).
+
 ## Interactive wiki and item macro
 
 Use `{{cad_preview(123)}}`, where 123 is the attachment ID, in an item

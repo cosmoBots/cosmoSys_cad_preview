@@ -1,0 +1,8 @@
+{
+  "name": "cosmosys-cad-preview-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  }
+}
