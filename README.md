@@ -1,6 +1,6 @@
 # cosmoSys CAD Preview integration
 
-Version: `0.1.1`. Redmine 7.0.1+, cosmoSys 0.2.4+ and
+Version: `0.1.2`. Redmine 7.0.1+, cosmoSys 0.2.7+ and
 the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
 
 Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
@@ -97,8 +97,19 @@ The save endpoint checks CSRF, edit permission, camera values, PNG format/size,
 and optimistic revision. Image payloads are filtered from request logs.
 PNG validation uses ImageMagick already provided by cosmoSys.
 
+Version 0.1.2: newly captured snapshots retain each attachment's source ID.
+The core materializer builds the old-to-new ID map after restoring files;
+this plugin registers a macro rewriter to update `cad_preview` in items,
+document descriptions and restored wiki content. References may target an
+attachment of another included item/document/page; no catalog entry is needed.
+View names, height and whitespace are preserved. A filename or content digest
+is not used to guess identity. Older packages without source IDs must be
+exported again. Attachments outside the selected snapshot are not imported or
+remapped. Install cosmoSys 0.2.7+ and integration 0.1.2+ together;
+the CAD integration must be active during import to register its rewriter.
+
 Limits: proprietary thumbnail-only formats do not save a view; DWG still needs
-the optional converter (not installed in 3001). Snapshot/copy transfer and ID rewriting of
-these macros remain future work: transferring a project currently requires
-recreating its editorial views. This does not extend standalone Redmine wiki
+the optional converter (not installed in 3001). Saved cameras and PNG report
+views are not transferred: importing still requires recreating these views.
+This does not extend standalone Redmine wiki
 PDF export; the static figure path is the cosmoSys report exporter.
