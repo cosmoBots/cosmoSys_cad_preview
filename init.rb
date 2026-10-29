@@ -8,7 +8,7 @@ Redmine::Plugin.register :cosmosys_cad_preview do
   name 'cosmoSys CAD Preview integration'
   author 'cosmoBots.eu'
   description 'CAD viewer defaults for cosmoSys; requires the cosmoBots CAD Preview fork.'
-  version '0.1.2'
+  version '0.1.3-dirty'
   url 'https://github.com/cosmoBots/cosmoSys_cad_preview'
   author_url 'https://cosmobots.eu'
   requires_redmine version_or_higher: '7.0.1'

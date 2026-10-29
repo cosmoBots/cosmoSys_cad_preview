@@ -1,10 +1,17 @@
 # cosmoSys CAD Preview integration
 
-Version: `0.1.2`. Redmine 7.0.1+, cosmoSys 0.2.7+ and
+Development version: `0.1.3-dirty` (published baseline `0.1.2`). Redmine 7.0.1+, cosmoSys 0.2.7+ and
 the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
 
 Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
 it does not change the upstream viewer or the editorial capture workflow.
+
+Development adds `model_controls.js`: rigid 3D node controls on the existing
+viewer, without changing the upstream fork. A derived GLB supplies
+`extras.cosmosys_cad_node_index` bindings; configuration selects visible geometry
+and local/global translation/rotation controls. Each update starts at rest,
+applies local XYZ offsets then global XYZ offsets, parents first. This module
+does not persist poses or know about architecture items, PORIS or MQTT.
 
 This plugin supplies initial material and lighting options through the fork's
 generic viewer-options provider. It does not duplicate its JavaScript viewer,
