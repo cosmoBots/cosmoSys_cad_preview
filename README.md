@@ -10,7 +10,11 @@ Development adds `model_controls.js`: rigid 3D node controls on the existing
 viewer, without changing the upstream fork. A derived GLB supplies
 `extras.cosmosys_cad_node_index` bindings; configuration selects visible geometry
 and local/global translation/rotation controls. Each update starts at rest,
-applies local XYZ offsets then global XYZ offsets, parents first. This module
+applies local offsets then global offsets, parents first. Euler decomposition
+defaults to XYZ; explicit `rotation_order` selects any of the six Euler orders
+for the model or a node transform. For Godot annotations, use YXZ. Reordering
+preserves the original quaternion before applying explicit rest transforms.
+This module
 does not persist poses or know about architecture items, PORIS or MQTT.
 
 This plugin supplies initial material and lighting options through the fork's

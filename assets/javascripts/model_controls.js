@@ -16,6 +16,11 @@ export class ModelControls {
     });
     if (!this.nodes.size) throw new Error('The model has no node bindings');
     this.configuration = configuration;
+    const order = configuration.rotation_order;
+    if (order) {
+      this.validateRotationOrder(order);
+      this.nodes.forEach(node => node.rotation.reorder(order));
+    }
     this.controls = configuration.controls || [];
     this.controls.forEach(control => {
       if (!this.nodes.has(control.node)) throw new Error(`Missing controlled node ${control.node}`);
@@ -23,6 +28,7 @@ export class ModelControls {
     let root = this.nodes.values().next().value;
     while (root.parent && root.parent !== this.scene) root = root.parent;
     this.root = root;
+    if (order) root.rotation.reorder(order);
     this.transform(root, configuration.transform || {});
     Object.entries(configuration.node_transforms || {}).forEach(([index, transform]) => {
       const node = this.nodes.get(Number(index));
@@ -42,8 +48,16 @@ export class ModelControls {
   }
 
   transform(node, transform) {
+    if (transform.rotation_order) {
+      this.validateRotationOrder(transform.rotation_order);
+      node.rotation.reorder(transform.rotation_order);
+    }
     if (transform.translation) node.position.fromArray(transform.translation);
     if (transform.rotation_degrees) node.rotation.set(...transform.rotation_degrees.map(value => value * Math.PI / 180));
+  }
+
+  validateRotationOrder(order) {
+    if (!['XYZ', 'YXZ', 'ZXY', 'ZYX', 'YZX', 'XZY'].includes(order)) throw new Error('Invalid Euler rotation order');
   }
 
   setValues(values) {
