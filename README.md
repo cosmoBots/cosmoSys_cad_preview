@@ -1,6 +1,6 @@
 # cosmoSys CAD Preview integration
 
-Development version: `0.1.3-dirty` (published baseline `0.1.2`). Redmine 7.0.1+, cosmoSys 0.2.7+ and
+Version `0.1.3`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
 the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
 
 Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
