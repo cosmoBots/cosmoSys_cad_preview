@@ -1,4 +1,5 @@
 es:
+  text_cosmosys_cad_converter_managed: "Ejecutable DWG gestionado por el servidor; se ignoran los comandos configurados desde la web."
   label_cosmosys_cad_report_view: "Vista del informe"
   label_cosmosys_cad_default_view: "Predeterminada"
   text_cosmosys_cad_view_load_error: "El visor no terminó de cargar. Recarga la vista para guardar o recuperar el encuadre."

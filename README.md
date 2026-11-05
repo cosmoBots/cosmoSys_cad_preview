@@ -1,12 +1,22 @@
 # cosmoSys CAD Preview integration
 
-Version `0.1.3`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
+Version `0.1.4`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
 the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
 
 > **EXPERIMENTAL — opt-in:** This integration is not part of the production core.
 > Expect defects, incomplete features, performance limits and breaking changes.
 > Do not install it if you require production-level stability and support.
 > This status describes the cosmoSys integration, not the upstream CAD project.
+
+Maintenance 0.1.4 registers attachment cleanup after plugin loading, removing
+saved report views and their lock files on attachment deletion. DWG conversion
+and availability checks use only `/usr/local/bin/dwg2dxf`; saved or newly posted
+`dwg2dxf_command` settings are ignored. The settings page explains this server
+policy instead of offering a command field. Availability is bounded to 5 seconds;
+conversion timeout remains configurable up to 120 seconds. The executable and
+its directory must not be writable by the Redmine process. This is not a sandbox:
+DWG processing remains experimental and is not isolated from application files.
+The upstream fork and dependency minimums are unchanged.
 
 Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
 it does not change the upstream viewer or the editorial capture workflow.

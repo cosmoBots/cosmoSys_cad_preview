@@ -29,7 +29,9 @@ module CosmosysCadPreview
 
     def delete_all(attachment)
       default = path(attachment)
-      FileUtils.rm_f([default] + Dir.glob(File.join(File.dirname(default), "#{attachment.id}.*.json")))
+      views = [default] + Dir.glob(File.join(File.dirname(default), "#{attachment.id}.*.json"))
+      locks = ["#{default}.lock"] + Dir.glob(File.join(File.dirname(default), "#{attachment.id}.*.json.lock"))
+      FileUtils.rm_f(views + locks)
     end
 
     def read(attachment, view: nil)

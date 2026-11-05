@@ -8,7 +8,7 @@ Redmine::Plugin.register :cosmosys_cad_preview do
   name 'cosmoSys CAD Preview integration'
   author 'cosmoBots.eu'
   description 'CAD viewer defaults for cosmoSys; requires the cosmoBots CAD Preview fork.'
-  version '0.1.3'
+  version '0.1.4'
   url 'https://github.com/cosmoBots/cosmoSys_cad_preview'
   author_url 'https://cosmobots.eu'
   requires_redmine version_or_higher: '7.0.1'
@@ -20,6 +20,13 @@ end
 # The dependency sorts after this plugin. Register only after all plugins load.
 class CosmosysCadPreviewListener < Redmine::Hook::Listener
   def after_plugins_loaded(_context = {})
+    # Redmine loads plugin init.rb after Rails' initial prepare callbacks.
+    Attachment.include CosmosysCadPreview::AttachmentPatch unless Attachment < CosmosysCadPreview::AttachmentPatch
+    converter = RedmineCadPreview::DwgConverter.singleton_class
+    converter.prepend CosmosysCadPreview::DwgConverterPolicy unless converter < CosmosysCadPreview::DwgConverterPolicy
+    Redmine::Plugin.find(:redmine_cad_preview).settings(
+      default: RedmineCadPreview::DEFAULT_SETTINGS, partial: 'settings/cosmosys_cad_converter'
+    )
     Cosmosys::MaterializationReferenceRewriter.register(:cad_preview) do |text, attachment_id_map|
       CosmosysCadPreview::AttachmentMacroRewriter.call(text, attachment_id_map)
     end
