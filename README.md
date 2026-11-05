@@ -3,6 +3,11 @@
 Version `0.1.3`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
 the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
 
+> **EXPERIMENTAL — opt-in:** This integration is not part of the production core.
+> Expect defects, incomplete features, performance limits and breaking changes.
+> Do not install it if you require production-level stability and support.
+> This status describes the cosmoSys integration, not the upstream CAD project.
+
 Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
 it does not change the upstream viewer or the editorial capture workflow.
 
