@@ -6,6 +6,10 @@ the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
 Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
 it does not change the upstream viewer or the editorial capture workflow.
 
+Composed temporary viewers can set `@cad_report_tools_disabled` for that
+request to omit editorial persistence. Ordinary attachment/embedded viewers
+keep their save/restore controls even when Architecture is installed.
+
 Development adds `model_controls.js`: rigid 3D node controls on the existing
 viewer, without changing the upstream fork. A derived GLB supplies
 `extras.cosmosys_cad_node_index` bindings; configuration selects visible geometry
