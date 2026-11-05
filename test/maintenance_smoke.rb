@@ -20,6 +20,20 @@ begin
   2.times { CosmosysCadPreviewListener.instance.after_plugins_loaded }
   callbacks = Attachment._commit_callbacks.count { |c| c.filter == :cosmosys_cad_remove_report_view }
   check!(callbacks == 1, 'cleanup callback missing or duplicated')
+  upstream = Redmine::Plugin.find(:redmine_cad_preview)
+  original_version = upstream.version
+  begin
+    upstream.version '1.2.0'
+    rejected = false
+    begin
+      CosmosysCadPreviewListener.instance.after_plugins_loaded
+    rescue Redmine::PluginRequirementError => error
+      rejected = error.message.include?('1.0.1-cosmobots.1')
+    end
+    check!(rejected, 'unadapted upstream version did not fail with a dependency error')
+  ensure
+    upstream.version original_version
+  end
   Setting.plugin_redmine_cad_preview = original_settings.merge('dwg2dxf_command' => 'ruby -e arbitrary_code')
   check!(RedmineCadPreview::DwgConverter.command == '/usr/local/bin/dwg2dxf', 'web command still active')
   partial = Redmine::Plugin.find(:redmine_cad_preview).settings[:partial]

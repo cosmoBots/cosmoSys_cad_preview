@@ -1,7 +1,10 @@
 # cosmoSys CAD Preview integration
 
-Version `0.1.4`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
-the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1` or newer.
+Version `0.1.5`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
+**exactly** the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1`.
+Newer upstream builds are rejected at plugin loading until we adapt the macro,
+saved views and report integration; do not replace the fork with upstream main.
+The minimum cosmoSys dependency is unchanged.
 
 > **EXPERIMENTAL — opt-in:** This integration is not part of the production core.
 > Expect defects, incomplete features, performance limits and breaking changes.
@@ -17,6 +20,12 @@ conversion timeout remains configurable up to 120 seconds. The executable and
 its directory must not be writable by the Redmine process. This is not a sandbox:
 DWG processing remains experimental and is not isolated from application files.
 The upstream fork and dependency minimums are unchanged.
+
+Maintenance 0.1.5 adds the restrictive upstream dependency and tests its failure
+before installing integration patches. Upstream main `ca96eaf` declares 1.2.0,
+with its own `cad_preview` macro and database-backed views. Reusing that API is
+planned, not available in this release. See
+[the upstream design discussion](https://github.com/flowalchs/redmine_cad_preview/issues/3#issuecomment-6510767427).
 
 Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
 it does not change the upstream viewer or the editorial capture workflow.
