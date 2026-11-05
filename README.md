@@ -1,6 +1,6 @@
 # cosmoSys CAD Preview integration
 
-Version `0.1.5`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
+Version `0.1.6`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
 **exactly** the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1`.
 Newer upstream builds are rejected at plugin loading until we adapt the macro,
 saved views and report integration; do not replace the fork with upstream main.
@@ -26,6 +26,12 @@ before installing integration patches. Upstream main `ca96eaf` declares 1.2.0,
 with its own `cad_preview` macro and database-backed views. Reusing that API is
 planned, not available in this release. See
 [the upstream design discussion](https://github.com/flowalchs/redmine_cad_preview/issues/3#issuecomment-6510767427).
+
+Maintenance 0.1.6 makes the availability deadline raise `Timeout::Error` inside
+the converter runner, so its existing process-group cleanup runs on expiry.
+A regression reproduces the missed cleanup with Ruby's default non-rescuable
+timeout and verifies the correction. Compatibility and dependency bounds stay
+the same as 0.1.5.
 
 Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
 it does not change the upstream viewer or the editorial capture workflow.

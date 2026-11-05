@@ -40,4 +40,19 @@ class DwgConverterPolicyTest < Minitest::Test
       refute instance.available?
     end
   end
+
+  def test_availability_timeout_reaches_runner_cleanup
+    instance = converter
+    cleanup_called = false
+    instance.define_singleton_method(:run) do |*|
+      begin
+        sleep 10
+      rescue Timeout::Error
+        cleanup_called = true
+        nil
+      end
+    end
+    refute instance.available?
+    assert cleanup_called, 'timeout must reach the runner rescue that terminates its process group'
+  end
 end

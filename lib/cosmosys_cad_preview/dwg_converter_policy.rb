@@ -23,7 +23,7 @@ module CosmosysCadPreview
       return @available[command] if @available.key?(command)
 
       # The upstream runner rescues this timeout and terminates its process group.
-      status = Timeout.timeout(AVAILABILITY_TIMEOUT) do
+      status = Timeout.timeout(AVAILABILITY_TIMEOUT, Timeout::Error) do
         run([command, '--version'], 'DWG converter availability')
       end
       @available[command] = !!status&.success?
