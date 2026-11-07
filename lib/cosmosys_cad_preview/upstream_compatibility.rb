@@ -2,7 +2,7 @@
 
 module CosmosysCadPreview
   module UpstreamCompatibility
-    SUPPORTED_VERSION = '1.0.1-cosmobots.1'
+    SUPPORTED_VERSION = '1.3.0'
     module_function
 
     def verify!(version)
@@ -10,7 +10,7 @@ module CosmosysCadPreview
 
       raise Redmine::PluginRequirementError,
         "cosmosys_cad_preview requires redmine_cad_preview #{SUPPORTED_VERSION}; " \
-        "found #{version}. Newer upstream saved-view/macro APIs are not integrated yet."
+        "found #{version}. This integration uses the upstream saved-view and macro APIs."
     end
   end
 end

@@ -12,17 +12,21 @@ end
 
 class DwgConverterPolicyTest < Minitest::Test
   def converter
-    Object.new.extend(CosmosysCadPreview::DwgConverterPolicy)
+    base = Class.new do
+      def command = '/opt/server/dwg2dxf'
+      def command_arguments = [command]
+    end
+    base.prepend(CosmosysCadPreview::DwgConverterPolicy).new
   end
 
   def test_web_command_is_not_consumed_and_timeout_is_bounded
     instance = converter
-    assert_equal '/usr/local/bin/dwg2dxf', instance.command
-    assert_equal ['/usr/local/bin/dwg2dxf'], instance.send(:command_arguments)
+    assert_equal '/opt/server/dwg2dxf', instance.command
+    assert_equal ['/opt/server/dwg2dxf'], instance.send(:command_arguments)
     assert_equal 120, instance.timeout
   end
 
-  def test_availability_uses_fixed_argv_and_caches_result
+  def test_availability_uses_upstream_server_argv_and_caches_result
     instance = converter
     calls = []
     instance.define_singleton_method(:run) do |args, _description|
@@ -30,7 +34,7 @@ class DwgConverterPolicyTest < Minitest::Test
       Struct.new(:success?).new(true)
     end
     2.times { assert instance.available? }
-    assert_equal [['/usr/local/bin/dwg2dxf', '--version']], calls
+    assert_equal [['/opt/server/dwg2dxf', '--version']], calls
   end
 
   def test_missing_binary_and_timeout_are_unavailable

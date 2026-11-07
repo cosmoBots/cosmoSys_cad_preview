@@ -1,160 +1,92 @@
 # cosmoSys CAD Preview integration
 
-Version `0.1.6`. Redmine 7.0.1+, cosmoSys 0.2.8+ and
-**exactly** the cosmoBots fork of Redmine CAD Preview `1.0.1-cosmobots.1`.
-Newer upstream builds are rejected at plugin loading until we adapt the macro,
-saved views and report integration; do not replace the fork with upstream main.
-The minimum cosmoSys dependency is unchanged.
+Development version **0.1.7-dirty**. Redmine 7.0.1+, cosmoSys 0.2.8+ and
+Redmine CAD Preview **1.3.0**, currently upstream commit `9679499`.
+This is an integration candidate, not a tagged production release.
 
-> **EXPERIMENTAL — opt-in:** This integration is not part of the production core.
-> Expect defects, incomplete features, performance limits and breaking changes.
-> Do not install it if you require production-level stability and support.
-> This status describes the cosmoSys integration, not the upstream CAD project.
+> **EXPERIMENTAL — opt-in:** Expect defects, incomplete features and breaking
+> changes. This classification applies to our integration, not to upstream.
 
-Maintenance 0.1.4 registers attachment cleanup after plugin loading, removing
-saved report views and their lock files on attachment deletion. DWG conversion
-and availability checks use only `/usr/local/bin/dwg2dxf`; saved or newly posted
-`dwg2dxf_command` settings are ignored. The settings page explains this server
-policy instead of offering a command field. Availability is bounded to 5 seconds;
-conversion timeout remains configurable up to 120 seconds. The executable and
-its directory must not be writable by the Redmine process. This is not a sandbox:
-DWG processing remains experimental and is not isolated from application files.
-The upstream fork and dependency minimums are unchanged.
+## Ownership and interoperability
 
-Maintenance 0.1.5 adds the restrictive upstream dependency and tests its failure
-before installing integration patches. Upstream main `ca96eaf` declares 1.2.0,
-with its own `cad_preview` macro and database-backed views. Reusing that API is
-planned, not available in this release. See
-[the upstream design discussion](https://github.com/flowalchs/redmine_cad_preview/issues/3#issuecomment-6510767427).
+[Redmine CAD Preview](https://github.com/flowalchs/redmine_cad_preview) owns the
+`cad_preview` macro, inline/lazy viewers, named/default views, camera state,
+transparent cropped PNG capture, permissions, revisions and database storage.
+This plugin no longer registers that macro or provides its own iframe,
+capture toolbar, JSON storage or view endpoints. Upstream retains its license
+and attribution; the cosmoBots fork mirrors upstream without extra runtime code.
 
-Maintenance 0.1.6 makes the availability deadline raise `Timeout::Error` inside
-the converter runner, so its existing process-group cleanup runs on expiry.
-A regression reproduces the missed cleanup with Ruby's default non-rescuable
-timeout and verifies the correction. Compatibility and dependency bounds stay
-the same as 0.1.5.
+This integration retains:
+- Static, self-contained figures for cosmoSys HTML and ODT/DOCX/PDF reports.
+- Attachment-ID rewriting when cosmoSys materializes snapshots.
+- Generic rigid-node motion controls used by Architecture and PORIS–CAD.
+- Initial material/lighting defaults through the upstream ViewerOptions API.
+- Bounded DWG converter availability and conversion time.
 
-Version 0.1.1 raises the cosmoSys minimum to the database-portability version;
-it does not change the upstream viewer or the editorial capture workflow.
+## Embedding and report figures
 
-Composed temporary viewers can set `@cad_report_tools_disabled` for that
-request to omit editorial persistence. Ordinary attachment/embedded viewers
-keep their save/restore controls even when Architecture is installed.
-
-Development adds `model_controls.js`: rigid 3D node controls on the existing
-viewer, without changing the upstream fork. A derived GLB supplies
-`extras.cosmosys_cad_node_index` bindings; configuration selects visible geometry
-and local/global translation/rotation controls. Each update starts at rest,
-applies local offsets then global offsets, parents first. Euler decomposition
-defaults to XYZ; explicit `rotation_order` selects any of the six Euler orders
-for the model or a node transform. For Godot annotations, use YXZ. Reordering
-preserves the original quaternion before applying explicit rest transforms.
-This module
-does not persist poses or know about architecture items, PORIS or MQTT.
-
-This plugin supplies initial material and lighting options through the fork's
-generic viewer-options provider. It does not duplicate its JavaScript viewer,
-change source models or add migrations. Configure it under Administration →
-Plugins → cosmoSys CAD Preview integration. Individual viewers can switch
-between Original/Matte material and Original/Studio lighting without changing
-the instance defaults or the uploaded file.
-
-The fork lives at https://github.com/cosmoBots/redmine_cad_preview and retains
-the upstream MIT license and attribution. Studio reflections and matte material
-controls are generic features of that fork, not patches in this plugin.
-
-Editorial capture is implemented here in `assets/javascripts/report_capture.js`,
-using the fork's generic `getRenderContext()` API. Transparent rendering,
-alpha-bound cropping, the 1600 px limit and restoration of the background
-belong to this integration, along with storage and report selection. These
-cosmoBots additions are separate from the upstream author's viewer. Camera
-serialization/restoration and the original upstream screenshot tools remain
-in the viewer. Run `npm test` here for capture regressions (no dependencies).
-
-## Interactive wiki and item macro
-
-Use `{{cad_preview(123)}}`, where 123 is the attachment ID, in an item
-description or wiki page. Optional height: `{{cad_preview(123, height=520)}}`
-(240–1200 pixels; default 520). Width follows the available space.
-
-Use names to show the same attachment independently in several places:
+Use upstream syntax in item, document and wiki descriptions:
 
 ```text
+{{cad_preview(123)}}
 {{cad_preview(123, view=front, height=420)}}
-{{cad_preview(123, view=detail, height=420)}}
+{{cad_preview(model.glb, view=detail)}}
+{{cad_preview(123, view=*, png)}}
+{{cad_preview(123, readonly)}}
 ```
 
-Each attachment + view name has its own camera, PNG, lock and revision.
-The toolbar identifies the active view. Saving/restoring affects only that
-name; repeating the same name elsewhere deliberately shares that view.
-Names are case-sensitive, 1–64 ASCII letters/digits/hyphens/underscores,
-starting with a letter or digit. `default` (or no `view=`) selects the legacy
-view, preserving existing captures without migration. A new name starts empty,
-never falls back to the default view. `view` and `height` may appear in either
-order; duplicate or unknown options are rejected. Links retain the view name.
+Names are normalized by upstream. Omitting `view=` selects its default view;
+an explicit missing name is not replaced by another view. Save permissions are
+managed by upstream roles (own attachments or all visible attachments).
+`readonly` hides editorial editing controls, not access authorization.
 
-The macro embeds the existing viewer in a lazy-loaded, same-origin iframe,
-without Redmine navigation. It checks attachment visibility before emitting
-the frame, and the frame and file routes independently enforce permissions.
-Missing, inaccessible or unsupported attachments produce a generic macro error.
-Only numeric attachment IDs are supported, not arbitrary URLs or filenames.
-The embedded viewer does not save automatic thumbnail snapshots.
+In cosmoSys reports, the upstream parser and authorization still select the
+attachment and view. We consume `RedmineCadPreview::Views` and embed its saved
+PNG directly, preserving adjacent-image grouping without WebGL or a server-side
+browser. Missing or stale saved figures produce a notice; exploration never
+changes a saved figure. Upstream handles ordinary Redmine wiki PDF and email.
 
-## Saved report view (3D models and 2D drawings)
+## Temporary models and motion controls
 
-The embedded and full attachment viewers offer **Save view for reports** to
-users allowed to edit the attachment. It saves camera position/target/up,
-perspective or orthographic projection, zoom/frustum, viewport aspect, material,
-lighting, wireframe and background together with a PNG capture (maximum 1600 px
-per side). DXF/DWG drawings save scene center, view width and viewport aspect
-instead of a 3D camera. The original model and its automatic thumbnail are never replaced.
+Architecture preflight and PORIS–CAD use the upstream partial with
+`readonly: true` and no automatic thumbnail capture. They do not persist slider
+poses. `model_controls.js` retains local/global translations and rotations,
+limits/defaults, parent-first composition, explicit Euler orders and selection
+of visible GLB nodes through `extras.cosmosys_cad_node_index`. Each update starts
+from rest; the module does not know about items, PORIS or MQTT.
 
-Captures render with a transparent background and crop to nontransparent pixel
-bounds before optional downscaling. No background color is subtracted: white
-surfaces remain intact. Image dimensions are independent of the saved viewport
-aspect, which is still used when restoring the interactive view. Empty captures
-are rejected. Existing figures are preserved; save again to replace an old
-full-window image with a transparent cropped capture.
+## DWG conversion
 
-**Return to report view** restores the saved camera and appearance; exploring
-the model does not change the figure. The saved view is applied on opening.
-The viewport preserves the saved aspect ratio rather than stretching its frame.
-Buttons show pressed, busy/spinner, success and error feedback, with accessible
-status announcements. Button action labels never change to a persistent
-"Saved" or "Restored": the last action is reported in status, not as a claim
-that the current camera still matches it. Save/restore buttons are rendered in the initial HTML,
-disabled until the model loads, and remain visible with an explicit error if
-loading fails. The compact iframe removes Redmine's desktop minimum width;
-its toolbar stays sticky while scrolling.
-Read-only users can restore/explore but cannot save. Concurrent edits conflict
-instead of silently overwriting the other user's view; reload before retrying.
+The executable is configured by upstream through Redmine's
+`config/configuration.yml` (`dwg2dxf_command`) or the Redmine process PATH.
+A legacy web setting cannot select an executable. This integration does not
+override the server's command or duplicate the upstream settings page.
 
-In cosmoSys HTML reports and ODT/DOCX/PDF exports, the macro renders the saved
-PNG directly, without loading WebGL or requiring a server-side browser. If no
-view exists, a notice and link are shown, not an invented camera. Captures are
-explicit editorial content, not a cache. Views are keyed by attachment and name.
+Availability has a five-second deadline; conversion timeout is configurable up
+to 120 seconds. Timeout cleanup terminates and reaps the process group.
+These bounds are not process isolation or a sandbox. CAD conversion remains
+experimental. Deployment must verify its installed binary is reachable by the
+Redmine execution user using the new configuration method.
 
-Storage: `files/cosmosys_cad_report_views/<attachment_id>.json`, with camera and
-base64 PNG in a single atomically replaced file for the default view; named
-views use `<attachment_id>.<view>.json`. Include this directory in
-Redmine files backups. No database migration is required. A model digest/size
-change invalidates its views, and deleting the attachment removes all its view records.
-The save endpoint checks CSRF, edit permission, camera values, PNG format/size,
-and optimistic revision. Image payloads are filtered from request logs.
-PNG validation uses ImageMagick already provided by cosmoSys.
+## Storage and snapshots
 
-Version 0.1.2: newly captured snapshots retain each attachment's source ID.
-The core materializer builds the old-to-new ID map after restoring files;
-this plugin registers a macro rewriter to update `cad_preview` in items,
-document descriptions and restored wiki content. References may target an
-attachment of another included item/document/page; no catalog entry is needed.
-View names, height and whitespace are preserved. A filename or content digest
-is not used to guess identity. Older packages without source IDs must be
-exported again. Attachments outside the selected snapshot are not imported or
-remapped. Install cosmoSys 0.2.7+ and integration 0.1.2+ together;
-the CAD integration must be active during import to register its rewriter.
+New saved views and images belong to upstream's database table and Attachment
+records; include the database and file store in backups. Run its migration and
+assign the upstream save-view permissions before testing.
 
-Limits: proprietary thumbnail-only formats do not save a view; DWG still needs
-the optional converter (not installed in 3001). Saved cameras and PNG report
-views are not transferred: importing still requires recreating these views.
-This does not extend standalone Redmine wiki
-PDF export; the static figure path is the cosmoSys report exporter.
+Experimental JSON views from earlier integration builds are not migrated or
+deleted automatically. They are no longer read; recreate demo views as needed.
+The existing backup remains available.
+
+For snapshots, numeric attachment references in `cad_preview` are rewritten
+using the core source-ID map, including cross-item/document/page references
+inside the captured scope. Filenames use upstream's attachment lookup.
+This does not yet preserve saved cameras/images or PORIS–CAD bindings across
+project snapshots/copies; that remains separate experimental work.
+
+## Validation
+
+`npm test` checks the retained control module. Ruby tests in `test/` cover
+compatibility and converter bounds. `test/maintenance_smoke.rb` exercises
+upstream persistence, macro isolation, permissions and report exports in an
+isolated Redmine laboratory, never against a live user's project.

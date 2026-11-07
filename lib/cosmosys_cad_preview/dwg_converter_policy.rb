@@ -1,16 +1,11 @@
 # frozen_string_literal: true
 
 module CosmosysCadPreview
-  # Server policy, not a shell command supplied by a Redmine administrator.
+  # Resource bounds for the upstream server-configured converter.
   # This does not isolate the converter from the application's filesystem.
   module DwgConverterPolicy
-    EXECUTABLE = '/usr/local/bin/dwg2dxf'
     AVAILABILITY_TIMEOUT = 5
     CONVERSION_TIMEOUT = 120
-
-    def command
-      EXECUTABLE
-    end
 
     def timeout
       value = RedmineCadPreview.settings['conversion_timeout'].to_i
@@ -24,17 +19,11 @@ module CosmosysCadPreview
 
       # The upstream runner rescues this timeout and terminates its process group.
       status = Timeout.timeout(AVAILABILITY_TIMEOUT, Timeout::Error) do
-        run([command, '--version'], 'DWG converter availability')
+        run(command_arguments + ['--version'], 'DWG converter availability')
       end
       @available[command] = !!status&.success?
     rescue Timeout::Error, SystemCallError, IOError
       @available[command] = false
-    end
-
-    private
-
-    def command_arguments
-      [command]
     end
   end
 end

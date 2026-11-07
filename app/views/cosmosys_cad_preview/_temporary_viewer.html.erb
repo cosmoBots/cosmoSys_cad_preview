@@ -1,0 +1,9 @@
+<%# Temporary geometry/poses: upstream interaction, never editorial saves. %>
+<%= render partial: 'cad_previews/viewer', locals: {
+  attachment: @attachment, cad_format: @cad_format, cad_image: @cad_image,
+  snapshot: false, view: nil, embedded: false, height: nil, readonly: true
+} %>
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'cad_preview', plugin: 'redmine_cad_preview' %>
+  <%= javascript_include_tag 'cad_preview', plugin: 'redmine_cad_preview', type: 'module' %>
+<% end %>
