@@ -1,8 +1,8 @@
 # cosmoSys CAD Preview integration
 
-Development version **0.1.7-dirty**. Redmine 7.0.1+, cosmoSys 0.2.8+ and
+Version **0.1.7**. Redmine 7.0.1+, cosmoSys 0.2.8+ and
 Redmine CAD Preview **1.3.0**, currently upstream commit `9679499`.
-This is an integration candidate, not a tagged production release.
+The deployment pins that exact upstream revision; this integration remains experimental.
 
 > **EXPERIMENTAL — opt-in:** Expect defects, incomplete features and breaking
 > changes. This classification applies to our integration, not to upstream.
