@@ -19,7 +19,17 @@ module CosmosysCadPreview
     end
 
     def render_images(view, attachment, views, height, static)
-      return super unless cosmosys_report?(view)
+      unless cosmosys_report?(view)
+        images = super
+        # Upstream loads its stylesheet with interactive viewers, but a PNG-only
+        # HTML page also needs the inline figure rules. Do not load WebGL or add
+        # stylesheet links to email/native static exports.
+        return images if static || view.instance_variable_get(:@cad_preview_assets) ||
+          view.instance_variable_get(:@cosmosys_cad_png_styles)
+
+        view.instance_variable_set(:@cosmosys_cad_png_styles, true)
+        return view.safe_join([view.stylesheet_link_tag('cad_preview', plugin: 'redmine_cad_preview'), images])
+      end
 
       view.safe_join(views.map do |saved|
         if !saved || saved.stale? || !saved.image&.visible?(User.current) || !File.file?(saved.image.diskfile)

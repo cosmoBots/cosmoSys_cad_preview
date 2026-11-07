@@ -40,6 +40,11 @@ an explicit missing name is not replaced by another view. Save permissions are
 managed by upstream roles (own attachments or all visible attachments).
 `readonly` hides editorial editing controls, not access authorization.
 
+`png` also works in ordinary HTML: put two macros on the same Markdown line to
+show two static figures without loading viewers. The integration includes the
+upstream figure stylesheet on PNG-only HTML pages too; interactive viewers are
+not needed just to obtain that layout. Use `height=` to keep the pair compact.
+
 In cosmoSys reports, the upstream parser and authorization still select the
 attachment and view. We consume `RedmineCadPreview::Views` and embed its saved
 PNG directly, preserving adjacent-image grouping without WebGL or a server-side
