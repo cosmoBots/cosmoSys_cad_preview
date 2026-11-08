@@ -1,7 +1,7 @@
 /* Presentation policy belongs to our integration, never the upstream viewer.
    Keep native controls mounted: its initialization still binds their events. */
 .cosmosys-cad-observer .cad-preview-toolbar > :not(.cad-preview-toolbar-group:has([data-cad-material-mode])),
-.cosmosys-cad-observer .cad-preview-toolbar [data-cad-action],
+.cosmosys-cad-observer .cad-preview-toolbar [data-cad-action]:not([data-cad-action="world-axes"]),
 .cosmosys-cad-observer .cad-preview-info,
 .cosmosys-cad-observer .cad-preview-parts {
   display: none !important;
