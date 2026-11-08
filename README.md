@@ -1,6 +1,6 @@
 # cosmoSys CAD Preview integration
 
-Version **0.1.8-dirty**. Redmine 7.0.1+, cosmoSys 0.2.8+ and
+Version **0.1.8**. Redmine 7.0.1+, cosmoSys 0.2.8+ and
 Redmine CAD Preview **1.3.0**.
 
 > **EXPERIMENTAL — opt-in:** Expect defects, incomplete features and breaking
@@ -13,6 +13,8 @@ with static figures for cosmoSys reports, attachment-reference remapping on
 snapshot import, and motion controls for Architecture and PORIS integrations.
 Embedding, saved views and view permissions are provided by Redmine CAD Preview.
 That upstream project retains its own license and authorship.
+
+This integration is licensed under GNU GPL version 3; see [LICENSE](LICENSE).
 
 Configure initial material and lighting under **Administration → Plugins →
 Redmine CAD Preview → Configure**. This integration has no separate appearance

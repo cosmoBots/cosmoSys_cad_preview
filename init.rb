@@ -7,7 +7,7 @@ Redmine::Plugin.register :cosmosys_cad_preview do
   name 'cosmoSys CAD Preview integration'
   author 'cosmoBots.eu'
   description 'Reports and CAD model controls for cosmoSys.'
-  version '0.1.8-dirty'
+  version '0.1.8'
   url 'https://github.com/cosmoBots/cosmoSys_cad_preview'
   author_url 'https://cosmobots.eu'
   requires_redmine version_or_higher: '7.0.1'
