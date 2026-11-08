@@ -1,6 +1,6 @@
 # cosmoSys CAD Preview integration
 
-Version **0.1.7**. Redmine 7.0.1+, cosmoSys 0.2.8+ and
+Version **0.1.8-dirty**. Redmine 7.0.1+, cosmoSys 0.2.8+ and
 Redmine CAD Preview **1.3.0**.
 
 > **EXPERIMENTAL — opt-in:** Expect defects, incomplete features and breaking
