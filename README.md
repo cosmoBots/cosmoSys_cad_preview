@@ -14,6 +14,10 @@ snapshot import, and motion controls for Architecture and PORIS integrations.
 Embedding, saved views and view permissions are provided by Redmine CAD Preview.
 That upstream project retains its own license and authorship.
 
+Configure initial material and lighting under **Administration → Plugins →
+Redmine CAD Preview → Configure**. This integration has no separate appearance
+settings. Saved views retain their own material and lighting.
+
 ## Embedding and report figures
 
 Use upstream syntax in item, document and wiki descriptions:
